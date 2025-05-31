@@ -22,6 +22,20 @@ class GuruController extends Controller
         return view('profile.guru.show', compact('guru'));
     }
 
+    public function showForum($id)
+    {
+        $guru = User::where('role', 'guru')->findOrFail($id);
+
+        $currentUser = auth()->user();
+
+        // Contoh: murid dan admin boleh lihat profil guru
+        if (!in_array($currentUser->role, ['murid', 'admin'])) {
+            abort(403, "You don't have access to view this profile");
+        }
+
+        return view('profile.guru.show', compact('guru'));
+    }
+
     public function edit()
     {
         $user = Auth::user();

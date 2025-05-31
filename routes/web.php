@@ -109,5 +109,5 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:murid,guru,admin'])->group(function () {
     Route::get('/profil/murid/{id}', [MuridController::class, 'show'])->name('murid.show');
     Route::get('/profil/admin/{id}', [AdminController::class, 'show'])->name('admin.show');
-    Route::get('/profil/guru/{id}', [GuruController::class, 'show'])->name('guru.show');
+    Route::get('/profil/guru/{id}', [GuruController::class, 'showForum'])->name('guru.show');
 });
