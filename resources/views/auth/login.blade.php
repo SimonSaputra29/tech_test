@@ -12,6 +12,37 @@
 
 @section('content')
     <div class="flex justify-center items-center min-h-screen px-4">
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#2563eb'
+                });
+            </script>
+        @endif
+        @if ($errors->any())
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Login',
+                        html: `{!! implode('<br>', $errors->all()) !!}`,
+                        confirmButtonColor: '#2563eb',
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp'
+                        }
+                    });
+                }, 300);
+            </script>
+        @endif
+
+
         <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8" data-aos="fade-up">
             <div class="text-center mb-6">
                 <img src="{{ asset('images/edumatch.png') }}" alt="EduMatch Logo" class="mx-auto h-16 mb-2">

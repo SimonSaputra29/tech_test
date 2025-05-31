@@ -23,10 +23,14 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">#</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -37,7 +41,8 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-900">{{ $user->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ $user->email }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap capitalize text-sm font-semibold
+                            <td
+                                class="px-6 py-4 whitespace-nowrap capitalize text-sm font-semibold
                                 {{ $user->role === 'admin' ? 'text-red-600' : ($user->role === 'guru' ? 'text-blue-600' : 'text-green-600') }}">
                                 {{ $user->role }}
                             </td>
@@ -48,10 +53,11 @@
                                 </a>
 
                                 <form action="{{ route('admin.pengguna.destroy', $user->id) }}" method="POST"
-                                    class="inline form-delete">
+                                    class="inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
+                                        onclick="return confirm('Yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.')"
                                         class="text-red-600 hover:text-red-900 font-semibold cursor-pointer" title="Hapus">
                                         Hapus
                                     </button>
@@ -68,33 +74,3 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const deleteForms = document.querySelectorAll('.form-delete');
-
-            deleteForms.forEach(form => {
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    Swal.fire({
-                        title: 'Yakin ingin menghapus?',
-                        text: 'Pengguna ini akan dihapus secara permanen.',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#e3342f',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
-                });
-            });
-        });
-    </script>
-@endpush

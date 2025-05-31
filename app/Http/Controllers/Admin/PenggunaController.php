@@ -104,9 +104,16 @@ class PenggunaController extends Controller
         return redirect()->route('admin.pengguna.index')->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
+    // PenggunaController.php
     public function destroy($id)
     {
         $user = User::findOrFail($id);
+
+        // Cegah pengguna admin menghapus dirinya sendiri (opsional)
+        if (auth()->id() === $user->id) {
+            return redirect()->route('admin.pengguna.index')->with('error', 'Anda tidak dapat menghapus akun sendiri.');
+        }
+
         $user->delete();
 
         return redirect()->route('admin.pengguna.index')->with('success', 'Pengguna berhasil dihapus.');
