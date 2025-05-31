@@ -25,7 +25,7 @@
     @endauth
 
     {{-- Konten Halaman --}}
-    <div class="max-w-7xl mx-auto mt-6 px-4">
+    <div class="pt-20 max-w-7xl mx-auto px-6">
         @yield('content')
     </div>
 
