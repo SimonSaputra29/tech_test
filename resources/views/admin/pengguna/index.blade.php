@@ -22,21 +22,11 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">#
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi
-                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">#</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -47,8 +37,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-900">{{ $user->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ $user->email }}</td>
-                            <td
-                                class="px-6 py-4 whitespace-nowrap capitalize text-sm font-semibold
+                            <td class="px-6 py-4 whitespace-nowrap capitalize text-sm font-semibold
                                 {{ $user->role === 'admin' ? 'text-red-600' : ($user->role === 'guru' ? 'text-blue-600' : 'text-green-600') }}">
                                 {{ $user->role }}
                             </td>
@@ -58,10 +47,15 @@
                                     Edit
                                 </a>
 
-                                <button onclick="confirmDelete({{ $user->id }}, '{{ $user->name }}')"
-                                    class="text-red-600 hover:text-red-900 font-semibold cursor-pointer" title="Hapus">
-                                    Hapus
-                                </button>
+                                <form action="{{ route('admin.pengguna.destroy', $user->id) }}" method="POST"
+                                    class="inline form-delete">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="text-red-600 hover:text-red-900 font-semibold cursor-pointer" title="Hapus">
+                                        Hapus
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -73,55 +67,34 @@
             {{ $users->links() }}
         </div>
     </div>
+@endsection
 
-    {{-- Modal Delete Confirmation --}}
-    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden z-50">
-        <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-6 mx-4">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">Konfirmasi Hapus</h3>
-            <p id="deleteMessage" class="mb-6 text-gray-700"></p>
-            <div class="flex justify-end space-x-4">
-                <button onclick="closeModal()"
-                    class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold transition">Batal</button>
-                <form id="deleteForm" method="POST" action="">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                        class="px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white font-semibold transition">Hapus</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // AOS Init
-        document.addEventListener('DOMContentLoaded', () => {
-            AOS.init({
-                duration: 600,
-                easing: 'ease-in-out',
-                once: true,
+        document.addEventListener("DOMContentLoaded", function () {
+            const deleteForms = document.querySelectorAll('.form-delete');
+
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Yakin ingin menghapus?',
+                        text: 'Pengguna ini akan dihapus secara permanen.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#e3342f',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
             });
         });
-
-        function confirmDelete(userId, userName) {
-            const modal = document.getElementById('deleteModal');
-            const message = document.getElementById('deleteMessage');
-            const form = document.getElementById('deleteForm');
-
-            message.textContent = `Apakah Anda yakin ingin menghapus pengguna "${userName}"?`;
-            form.action = `/pengguna/${userId}`;
-            modal.classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('deleteModal').classList.add('hidden');
-        }
-
-        // Optional: close modal on clicking outside modal content
-        window.onclick = function(event) {
-            const modal = document.getElementById('deleteModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        }
     </script>
-@endsection
+@endpush

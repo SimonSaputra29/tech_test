@@ -101,18 +101,12 @@ class PenggunaController extends Controller
         // Update data pengguna
         $user->update($validated);
 
-        return redirect()->route('pengguna.index')->with('success', 'Data pengguna berhasil diperbarui.');
+        return redirect()->route('admin.pengguna.index')->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        if ($user->photo) {
-            Storage::disk('public')->delete($user->photo);
-        }
-        if ($user->identity_card) {
-            Storage::disk('public')->delete($user->identity_card);
-        }
-
+        $user = User::findOrFail($id);
         $user->delete();
 
         return redirect()->route('admin.pengguna.index')->with('success', 'Pengguna berhasil dihapus.');
